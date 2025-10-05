@@ -1,0 +1,46 @@
+[Version]
+Signature="$WINDOWS NT$"
+Class=System
+ClassGuid={4D36E97D-E325-11CE-BFC1-08002BE10318}
+Provider=%ProviderName%
+DriverVer=10/05/2025,1.0.0.0
+
+[DestinationDirs]
+DefaultDestDir = 12
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksFiles]
+ioctl_driver.sys = 1,,
+
+[Manufacturer]
+%ManufacturerName%=Standard,NTamd64
+
+[Standard.NTamd64]
+%DeviceDesc%=IoctlDriver_Install, Root\IoctlDriver
+
+[IoctlDriver_Install.NT]
+CopyFiles=Drivers_Dir
+
+[Drivers_Dir]
+ioctl_driver.sys
+
+[IoctlDriver_Install.NT.Services]
+AddService = IoctlDriver,%SPSVCINST_ASSOCSERVICE%, IoctlDriver_Service_Inst
+
+[IoctlDriver_Service_Inst]
+DisplayName    = %ServiceDesc%
+ServiceType    = 1
+StartType      = 3
+ErrorControl   = 1
+ServiceBinary  = %12%\ioctl_driver.sys
+
+[Strings]
+SPSVCINST_ASSOCSERVICE= 0x00000002
+ProviderName="IoctlDriver"
+ManufacturerName="IoctlDriver"
+DiskName="IoctlDriver Installation Disk"
+DeviceDesc="IoctlDriver Device"
+ServiceDesc="IoctlDriver Service"
+

@@ -1,0 +1,18 @@
+[package]
+name = "ioctl-driver"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+wdk = "0.2.0"
+wdk-sys = "0.2.0"
+
+[lib]
+crate-type = ["cdylib"]
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
+
