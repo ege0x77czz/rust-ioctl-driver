@@ -25,17 +25,26 @@ unsafe impl core::alloc::GlobalAlloc for DummyAllocator {
     unsafe fn dealloc(&self, _ptr: *mut u8, _layout: core::alloc::Layout) {}
 }
 
-const DEVICE_NAME: &[u16] = &[
-    '\\' as u16, 'D' as u16, 'e' as u16, 'v' as u16, 'i' as u16, 'c' as u16, 'e' as u16,
-    '\\' as u16, 'I' as u16, 'o' as u16, 'c' as u16, 't' as u16, 'l' as u16, 'T' as u16,
-    'e' as u16, 's' as u16, 't' as u16, 0,
-];
+macro_rules! wstr {
+    ($s:expr) => {{
+        const STR: &str = concat!($s, "\0");
+        const LEN: usize = STR.len();
+        const fn encode(s: &str) -> [u16; LEN] {
+            let bytes = s.as_bytes();
+            let mut result = [0u16; LEN];
+            let mut i = 0;
+            while i < LEN {
+                result[i] = bytes[i] as u16;
+                i += 1;
+            }
+            result
+        }
+        &encode(STR)
+    }};
+}
 
-const SYMLINK_NAME: &[u16] = &[
-    '\\' as u16, 'D' as u16, 'o' as u16, 's' as u16, 'D' as u16, 'e' as u16, 'v' as u16,
-    'i' as u16, 'c' as u16, 'e' as u16, 's' as u16, '\\' as u16, 'I' as u16, 'o' as u16,
-    'c' as u16, 't' as u16, 'l' as u16, 'T' as u16, 'e' as u16, 's' as u16, 't' as u16, 0,
-];
+const DEVICE_NAME: &[u16] = wstr!("\\Device\\IoctlTest");
+const SYMLINK_NAME: &[u16] = wstr!("\\DosDevices\\IoctlTest");
 
 const FILE_DEVICE_UNKNOWN: u32 = 0x00000022;
 const METHOD_BUFFERED: u32 = 0;
